@@ -103,11 +103,20 @@ PRODUCT_COPY_FILES += \
 
 # Device specific firmware
 PRODUCT_COPY_FILES += \
+    device/htc/vivow/firmware/vidc_720p_command_control.fw:system/etc/firmware/vidc_720p_command_control.fw \
+    device/htc/vivow/firmware/vidc_720p_h263_dec_mc.fw:system/etc/firmware/vidc_720p_h263_dec_mc.fw \
+    device/htc/vivow/firmware/vidc_720p_h264_dec_mc.fw:system/etc/firmware/vidc_720p_h264_dec_mc.fw \
+    device/htc/vivow/firmware/vidc_720p_h264_enc_mc.fw:system/etc/firmware/vidc_720p_h264_enc_mc.fw \
+    device/htc/vivow/firmware/vidc_720p_mp4_dec_mc.fw:system/etc/firmware/vidc_720p_mp4_dec_mc.fw \
+    device/htc/vivow/firmware/vidc_720p_mp4_enc_mc.fw:system/etc/firmware/vidc_720p_mp4_enc_mc.fw \
+    device/htc/vivow/firmware/vidc_720p_vc1_dec_mc.fw:system/etc/firmware/vidc_720p_vc1_dec_mc.fw \
     device/htc/vivow/firmware/bcm4329.hcd:system/vendor/firmware/bcm4329.hcd \
+    device/htc/vivow/firmware/fw_bcmdhd.bin:system/vendor/firmware/fw_bcmdhd.bin \
+    device/htc/vivow/firmware/fw_bcmdhd_apsta.bin:system/vendor/firmware/fw_bcmdhd_apsta.bin \
     device/htc/vivow/firmware/default.acdb:system/etc/firmware/default.acdb \
     device/htc/vivow/firmware/default_mfg.acdb:system/etc/firmware/default_mfg.acdb \
     device/htc/vivow/firmware/default_org.acdb:system/etc/firmware/default_org.acdb \
-    device/htc/vivow/firmware/default_org_nel.acdb:system/etc/firmware/default_org_nel.acdb
+    device/htc/vivow/firmware/default_org_nel.acdb:system/etc/firmware/default_org_nel.acdb 
 
 # Audio DSP Profiles
 PRODUCT_COPY_FILES += \

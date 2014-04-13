@@ -1,0 +1,36 @@
+diff -rupN cm/src/com/android/providers/media/MediaProvider.java sze/src/com/android/providers/media/MediaProvider.java
+--- cm/src/com/android/providers/media/MediaProvider.java	2013-11-05 21:11:41.000000000 +0100
++++ sze/src/com/android/providers/media/MediaProvider.java	2013-11-11 21:24:02.000000000 +0100
+@@ -5246,6 +5246,7 @@ public class MediaProvider extends Conte
+                     String path = mExternalStoragePaths[0];
+                     int volumeID = FileUtils.getFatVolumeId(path);
+                     //if (LOCAL_LOGV) Log.v(TAG, path + " volume ID: " + volumeID);
++
+                     Log.e(TAG, path + " volume ID: " + volumeID);
+ 
+                     // In case of a non-FAT filesystem, try to get the UUID
+@@ -5255,6 +5256,24 @@ public class MediaProvider extends Conte
+                         Log.e(TAG, path + " UUID: " + volumeID);
+                     }
+ 
++                    // HACK: Kitkat switched to fuse managed sdcards so the
++                    // path (/storage/sdcard0) is actually the fuse mountpoint.
++	                    // hence it /always/ fails. I originally tried reading
++	                    // /mnt/media_rw/sdcard0 but even mounted 777 MediaProvider
++	                    // couldn't read it? So as a workaround have vold set a
++	                    // system prop containing the volumeId so we can read it here.
++	                    if (volumeID == -1) {
++	                        Log.w(TAG, "getFatVolumeId() failed...");
++	                        // Vold sets prop based on label. That /should/ be the mount dir.
++	                        String volumeProp = "sys.storage.volumeid-" +
++	                            path.substring(path.lastIndexOf('/')+1);
++	                        String propVolumeID = SystemProperties.get(volumeProp);
++	                        Log.w(TAG, "Read " + volumeProp + " volumeID=" + propVolumeID);
++	                        if (!"".equals(propVolumeID)) {
++	                            volumeID = Integer.valueOf(propVolumeID);
++	                        }
++	                    }
++
+                     // Must check for failure!
+                     // If the volume is not (yet) mounted, this will create a new
+                     // external-ffffffff.db database instead of the one we expect.  Then, if

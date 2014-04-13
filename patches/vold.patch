@@ -1,0 +1,58 @@
+diff -rupN cm/Volume.cpp sze/Volume.cpp
+--- cm/Volume.cpp	2013-11-10 23:28:26.000000000 +0100
++++ sze/Volume.cpp	2013-11-11 21:20:47.000000000 +0100
+@@ -20,6 +20,7 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ 
++#include <sys/ioctl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+@@ -27,6 +28,7 @@
+ #include <sys/mount.h>
+ #include <sys/param.h>
+ 
++#include <linux/msdos_fs.h>
+ #include <linux/kdev_t.h>
+ 
+ #include <cutils/properties.h>
+@@ -452,6 +454,13 @@ int Volume::mountVol() {
+                             AID_MEDIA_RW, AID_MEDIA_RW, 0007, true)) {
+                     SLOGE("%s failed to mount via VFAT (%s)\n", devicePath, strerror(errno));
+                     continue;
++            } else {
++	                // Store volume id to system prop so MediaProvider can read it later
++                char volStr[33];
++	                snprintf(volStr, 33, "%d", getFatVolumeId(getMountpoint()));
++                char volProp[PROPERTY_VALUE_MAX];
++	                snprintf(volProp, PROPERTY_VALUE_MAX, "sys.storage.volumeid-%s", getLabel());
++	                property_set(volProp, volStr);
+                 }
+ 
+             } else if (strcmp(fstype, "ext4") == 0) {
+@@ -708,3 +717,13 @@ int Volume::initializeMbr(const char *de
+ 
+     return rc;
+ }
++
++int Volume::getFatVolumeId(const char* path) {
++	    int result = -1;
++	    int fd = open(path, O_RDONLY);
++	    if (fd >= 0) {
++	        result = ioctl(fd, VFAT_IOCTL_GET_VOLUME_ID);
++	        close(fd);
++    }
++	    return result;
++}
+diff -rupN cm/Volume.h sze/Volume.h
+--- cm/Volume.h	2013-11-10 23:28:26.000000000 +0100
++++ sze/Volume.h	2013-11-11 21:17:32.000000000 +0100
+@@ -107,6 +107,7 @@ private:
+     int doUnmount(const char *path, bool force);
+     int doFuseMount(const char *src, const char *dst);
+     void protectFromAutorunStupidity();
++    int getFatVolumeId(const char *path);
+ };
+ 
+ typedef android::List<Volume *> VolumeCollection;

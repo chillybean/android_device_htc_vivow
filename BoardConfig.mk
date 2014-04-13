@@ -38,6 +38,11 @@ TARGET_BOOTLOADER_BOARD_NAME := vivow
 
 TARGET_RECOVERY_FSTAB = device/htc/vivow/ramdisk/fstab.vivow
 
+BOARD_HARDWARE_CLASS := device/htc/vivow/cmhw
+
+# Common stuffs for proper compilation
+TARGET_SPECIFIC_HEADER_PATH := device/htc/vivow/include
+
 # Use stock libril for now
 BOARD_HAS_EXTRA_SYS_PROPS := true
 
